@@ -1,8 +1,7 @@
-const User = require('../models/User');
-
-const router = require('express').Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const User = require('../models/User'),
+    router = require('express').Router(),
+    bcrypt = require('bcryptjs'),
+    jwt = require('jsonwebtoken');
 
 const {validationRegister, loginValidation} = require('../validation');
 
@@ -25,8 +24,8 @@ router.post('/register', async (req, res) => {
         return res.status(400).send('Email already exist');
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(req.body.password, salt);
+    const salt = await bcrypt.genSalt(10),
+        hashPassword = await bcrypt.hash(req.body.password, salt);
 
     try {
         const entityUser = new User({

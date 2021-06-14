@@ -1,7 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
-const verify = require('./verifyToken');
+const express = require('express'),
+    router = express.Router(),
+    User = require('../models/User'),
+    bcrypt = require('bcryptjs'),
+    verify = require('./verifyToken'),
+    jwt = require('jsonwebtoken');
+
+const {validationID} = require('../validation');
 
 router.get('/', verify, async (req, res) => {
     try {
@@ -14,6 +18,7 @@ router.get('/', verify, async (req, res) => {
 
 router.post('/', verify, async (req, res) => {
     try {
+        const salt = await bcrypt.genSalt(10), hashPassword = await bcrypt.hash(req.body.password, salt);
         const entityUser = new User({
             name: req.body.name,
             email: req.body.email,
@@ -26,9 +31,13 @@ router.post('/', verify, async (req, res) => {
     }
 });
 
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', verify, async (req, res) => {
     const userId = req.params.userId;
     if (userId) {
+        const { err } = validationID(userId);
+        if ( err ){
+            return res.status(400).send(error.details[0].message);
+        }
         try {
             const getUser = await User.findById(userId);
             res.json(getUser);
@@ -38,9 +47,13 @@ router.get('/:userId', async (req, res) => {
     }
 });
 
-router.delete('/:userId', async (req, res) => {
+router.delete('/:userId', verify, async (req, res) => {
     const userId = req.params.userId;
     if (userId) {
+        const { err } = validationID(userId);
+        if ( err ){
+            return res.status(400).send(error.details[0].message);
+        }
         try {
             const removeUser = await User.remove({_id: userId});
             res.json(removeUser);
@@ -50,13 +63,19 @@ router.delete('/:userId', async (req, res) => {
     }
 });
 
-router.patch('/:userId', async (req, res) => {
+router.patch('/:userId', verify, async (req, res) => {
     const userId = req.params.userId;
-    if (userId){
+    if (userId) {
+        const { err } = validationID(userId);
+        if ( err ){
+            return res.status(400).send(error.details[0].message);
+        }
         try {
+            const salt = await bcrypt.genSalt(10), hashPassword = await bcrypt.hash(req.body.password, salt);
             const updatedPost = await User.updateOne({_id: userId}, {$set: {
-                title: req.body.title,
-                description: req.body.description,
+                name: req.body.name,
+                email: req.body.email,
+                password: hashPassword,
             }});
             res.json(updatedPost);
         } catch (err) {

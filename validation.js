@@ -1,4 +1,5 @@
-const Joi = require('@hapi/joi');
+const Joi = require('@hapi/joi'),
+        JoiID = require('joi-oid');
 
 
 const validationRegister = (data) => {
@@ -18,5 +19,13 @@ const loginValidation = (data) => {
     return schema.validate(data);
 }
 
+const validationID = (data) => {
+    const schema = JoiID.object({
+        id: JoiID.objectId(),
+    })
+    return schema.validate(data);
+}
+
 module.exports.validationRegister = validationRegister;
 module.exports.loginValidation = loginValidation;
+module.exports.validationID = validationID;
