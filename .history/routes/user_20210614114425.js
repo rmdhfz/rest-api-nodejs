@@ -12,7 +12,7 @@ router.get('/', verify, async (req, res) => {
     }
 })
 
-router.post('/', verify, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const entityUser = new User({
             name: req.body.name,

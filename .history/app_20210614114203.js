@@ -8,15 +8,15 @@ require('dotenv/config');
 app.use(cors());
 app.use(express.json());
 
-const authRouter = require('./routes/auth'),
-    userRouter = require('./routes/user'),
-    bookRouter = require('./routes/book');
+const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
+const bookRouter = require('./routes/book');
 
+app.use('/api/book', bookRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
-app.use('/api/book', bookRouter);
 app.get('/', (req, res) => {
-    res.send('welcome');
+    res.send('we are an home');
 });
 
 mongosee.connect(

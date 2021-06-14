@@ -5,8 +5,7 @@ router.get('/', verify, (req, res) => {
     res.json({
             post: {
                 title: "my first post",
-                description: "this is description",
-                author: "Hafiz Ramadhan"
+                description: "this is description"
             }
         });
 })

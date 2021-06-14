@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const verify = require('./verifyToken');
 
-router.get('/', verify, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const data = await User.find();
         res.json(data);
@@ -12,13 +11,13 @@ router.get('/', verify, async (req, res) => {
     }
 })
 
-router.post('/', verify, async (req, res) => {
+router.post('/', async (req, res) => {
+    const entityUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashPassword,
+    })
     try {
-        const entityUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: hashPassword,
-        })
         const createdUser = await entityUser.save();
         res.json(createdUser);
     } catch (err) {
